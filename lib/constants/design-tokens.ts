@@ -1,0 +1,70 @@
+/**
+ * Design Tokens exported from DESIGN-slack.md & DESIGN-SYSTEM-RULES.md
+ */
+
+export const DESIGN_TOKENS = {
+  colors: {
+    primary: "#4a154b",
+    primaryDeep: "#481a54",
+    primaryPress: "#611f69",
+    primaryTint: "#592466",
+    onPrimary: "#ffffff",
+    ink: "#1d1d1d",
+    inkMute: "#696969",
+    linkBlue: "#1264a3",
+    linkHover: "#3860be",
+    canvas: "#ffffff",
+    canvasCream: "#f4ede4",
+    canvasLavender: "#f9f0ff",
+    surfaceElev: "#ffffff",
+    surfaceAubergine: "#4a154b",
+    hairline: "#e6e6e6",
+    hairlineStrong: "#000000",
+    semanticError: "#cc4117",
+    semanticSuccess: "#007a5a",
+    onAubergineMute: "#d9bdde",
+  },
+  categoryPalette: [
+    { name: "Aubergine", hex: "#4a154b", label: "Mặc định / Công việc" },
+    { name: "Peach", hex: "#F0A875", label: "Sức khoẻ / Thể thao" },
+    { name: "Dusty Green", hex: "#8CA88A", label: "Học tập" },
+    { name: "Lavender", hex: "#9B7EBD", label: "Cá nhân / Sở thích" },
+    { name: "Sand", hex: "#D9A441", label: "Tài chính / Chi tiêu" },
+    { name: "Dusty Blue", hex: "#6E93B5", label: "Giải trí / Xã hội" },
+  ],
+  moods: [
+    { value: 1, emoji: "😢", label: "Rất tệ", color: "#cc4117" },
+    { value: 2, emoji: "🙁", label: "Hơi buồn", color: "#F0A875" },
+    { value: 3, emoji: "😐", label: "Bình thường", color: "#D9A441" },
+    { value: 4, emoji: "🙂", label: "Tốt", color: "#8CA88A" },
+    { value: 5, emoji: "😄", label: "Tuyệt vời", color: "#007a5a" },
+  ],
+  journalPrompts: [
+    "Hôm nay điều gì khiến bạn hài lòng nhất?",
+    "Một bài học nhỏ bạn nhận ra hôm nay là gì?",
+    "Hôm nay bạn đã vượt qua thử thách nào?",
+    "Một khoảnh khắc khiến bạn cảm thấy biết ơn hôm nay?",
+    "Bạn muốn cải thiện điều gì cho ngày mai?",
+    "Một mục tiêu bạn đã tiến thêm một bước hôm nay là gì?",
+  ],
+  priorityColors: {
+    high: "#cc4117",
+    medium: "#D9A441",
+    low: "#696969",
+  },
+  statusColors: {
+    todo: "#696969",
+    in_progress: "#1264a3",
+    done: "#007a5a",
+    overdue: "#cc4117",
+  },
+  rounded: {
+    xs: "2px",
+    sm: "4px",
+    md: "8px",
+    lg: "12px",
+    xl: "16px",
+    xxl: "48px",
+    pill: "90px",
+  },
+} as const;

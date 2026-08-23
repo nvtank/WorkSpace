@@ -1,0 +1,157 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --primary: #4a154b;
+    --primary-deep: #481a54;
+    --primary-press: #611f69;
+    --primary-tint: #592466;
+    --on-primary: #ffffff;
+    --ink: #1d1d1d;
+    --ink-mute: #696969;
+    --link-blue: #1264a3;
+    --link-hover: #3860be;
+    --canvas: #ffffff;
+    --canvas-cream: #f4ede4;
+    --canvas-lavender: #f9f0ff;
+    --surface-elev: #ffffff;
+    --surface-aubergine: #4a154b;
+    --hairline: #e6e6e6;
+    --hairline-strong: #000000;
+    --semantic-error: #cc4117;
+    --semantic-success: #007a5a;
+    --on-aubergine-mute: #d9bdde;
+  }
+
+  .dark {
+    --primary: #611f69;
+    --primary-deep: #481a54;
+    --primary-press: #7b2984;
+    --primary-tint: #8b3296;
+    --on-primary: #ffffff;
+    --ink: #f2eef0;
+    --ink-mute: #d9bdde;
+    --link-blue: #5B9BD5;
+    --link-hover: #7db3e3;
+    --canvas: #17121b;
+    --canvas-cream: #1f1825;
+    --canvas-lavender: #2a1f33;
+    --surface-elev: #211a26;
+    --surface-aubergine: #2e1d35;
+    --hairline: rgba(255, 255, 255, 0.12);
+    --hairline-strong: rgba(255, 255, 255, 0.24);
+    --semantic-error: #E2603B;
+    --semantic-success: #1FA97A;
+    --on-aubergine-mute: #d9bdde;
+  }
+
+  * {
+    @apply border-hairline;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-canvas text-ink antialiased font-sans;
+    color: var(--ink);
+    background-color: var(--canvas);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  a {
+    color: var(--link-blue);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  a:hover {
+    color: var(--link-hover);
+  }
+
+  /* Headings negative letter-spacing per DESIGN-slack.md */
+  h1, h2, h3, h4 {
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+}
+
+/* Custom UI Components matching Slack Design Tokens & Rules */
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center font-bold text-[16px] leading-[1.38] tracking-[0.2px] text-white bg-primary rounded-pill px-7 py-3 transition-colors duration-150 active:bg-primary-press disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  .btn-primary-compact {
+    @apply inline-flex items-center justify-center font-bold text-[14.4px] leading-tight tracking-[0.144px] text-white bg-primary rounded-pill px-5 py-2.5 transition-colors duration-150 active:bg-primary-press disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center font-bold text-[16px] leading-[1.38] tracking-[0.2px] text-ink bg-canvas-lavender rounded-pill px-7 py-3 transition-colors duration-150 hover:bg-opacity-80 active:bg-opacity-90 disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  .btn-secondary-compact {
+    @apply inline-flex items-center justify-center font-bold text-[14.4px] leading-tight tracking-[0.144px] text-ink bg-canvas-lavender rounded-pill px-5 py-2.5 transition-colors duration-150 hover:bg-opacity-80 active:bg-opacity-90 disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center font-bold text-[16px] leading-[1.38] tracking-[0.2px] text-primary border-2 border-primary bg-transparent rounded-pill px-7 py-3 transition-colors duration-150 hover:bg-canvas-lavender hover:bg-opacity-30 disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  .btn-outline-compact {
+    @apply inline-flex items-center justify-center font-bold text-[14.4px] leading-tight tracking-[0.144px] text-primary border-2 border-primary bg-transparent rounded-pill px-5 py-2.5 transition-colors duration-150 hover:bg-canvas-lavender hover:bg-opacity-30 disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  .btn-ghost-pill {
+    @apply inline-flex items-center justify-center font-bold text-[14.4px] text-ink-mute hover:text-ink hover:bg-canvas-lavender rounded-pill px-4 py-2 transition-colors duration-150;
+  }
+
+  .btn-icon {
+    @apply inline-flex items-center justify-center min-w-[44px] min-h-[44px] w-11 h-11 rounded-full text-ink hover:bg-canvas-lavender transition-colors duration-150 active:scale-95 disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  .btn-icon-compact {
+    @apply inline-flex items-center justify-center w-9 h-9 rounded-full text-ink-mute hover:text-ink hover:bg-canvas-lavender transition-colors duration-150 active:scale-95;
+  }
+
+  .card-base {
+    @apply bg-surface rounded-xl border border-hairline p-6;
+  }
+
+  .card-cream {
+    @apply bg-canvas-cream text-ink rounded-xl p-6 border border-hairline;
+  }
+
+  .card-stat {
+    @apply bg-surface text-primary rounded-xl border border-hairline p-6;
+  }
+
+  .input-base {
+    @apply w-full bg-canvas text-ink text-[16px] leading-[1.55] rounded-md border border-hairline px-3 py-2.5 placeholder:text-ink-mute focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all;
+  }
+
+  .badge-pill {
+    @apply inline-flex items-center font-bold text-[12px] uppercase tracking-[0.96px] bg-canvas-cream text-ink rounded-pill px-3 py-1;
+  }
+
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-canvas;
+  }
+
+  /* Pastel mesh gradient background */
+  .bg-pastel-mesh {
+    background: radial-gradient(at 0% 0%, rgba(240, 168, 117, 0.18) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(155, 126, 189, 0.20) 0px, transparent 50%),
+                radial-gradient(at 50% 100%, rgba(140, 168, 138, 0.15) 0px, transparent 50%),
+                var(--canvas);
+  }
+
+  .bg-hero-aubergine {
+    background: linear-gradient(135deg, #4a154b 0%, #2e0d30 100%);
+  }
+}
