@@ -4,10 +4,21 @@ import { withAuth } from "@/lib/api-helper";
 // POST /api/upload
 export async function POST(req: NextRequest) {
   return withAuth(async () => {
-    const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
-    const apiKey = process.env.CLOUDINARY_API_KEY;
-    const apiSecret = process.env.CLOUDINARY_API_SECRET;
-    const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+    let cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+    let apiKey = process.env.CLOUDINARY_API_KEY;
+    let apiSecret = process.env.CLOUDINARY_API_SECRET;
+    const uploadPreset = process.env.CLOUDINARY_UPLOAD_PRESET || process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+
+    // Parse CLOUDINARY_URL if provided (e.g. cloudinary://api_key:api_secret@cloud_name)
+    const cloudinaryUri = process.env.CLOUDINARY_URL;
+    if (cloudinaryUri && (!cloudName || !apiKey || !apiSecret)) {
+      const match = cloudinaryUri.match(/cloudinary:\/\/([^:]+):([^@]+)@(.+)/);
+      if (match) {
+        apiKey = match[1];
+        apiSecret = match[2];
+        cloudName = match[3];
+      }
+    }
 
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
@@ -37,7 +48,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           error: "Chức năng upload ảnh chưa được cấu hình",
-          details: "Vui lòng thiết lập CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY và CLOUDINARY_API_SECRET trong file .env",
+          details: "Vui lòng thiết lập CLOUDINARY_URL hoặc (CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET) trong biến môi trường",
         },
         { status: 503 }
       );
