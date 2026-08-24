@@ -26,6 +26,15 @@ interface TaskFormDialogProps {
   defaultEndTime?: string;
 }
 
+function calculateDefaultEndTime(startTime: string): string {
+  if (!startTime) return "10:00";
+  const [h, m] = startTime.split(":").map(Number);
+  const nextH = Math.min(23, (h || 0) + 1);
+  const hStr = nextH < 10 ? `0${nextH}` : `${nextH}`;
+  const mStr = (m || 0) < 10 ? `0${m || 0}` : `${m || 0}`;
+  return `${hStr}:${mStr}`;
+}
+
 export function TaskFormDialog({
   isOpen,
   onClose,
@@ -43,7 +52,9 @@ export function TaskFormDialog({
   );
   const [hasSpecificTime, setHasSpecificTime] = useState(true);
   const [startTime, setStartTime] = useState(defaultStartTime || "09:00");
-  const [endTime, setEndTime] = useState(defaultEndTime || "10:00");
+  const [endTime, setEndTime] = useState(
+    defaultEndTime || (defaultStartTime ? calculateDefaultEndTime(defaultStartTime) : "10:00")
+  );
   const [priority, setPriority] = useState<TaskPriority>("medium");
   const [status, setStatus] = useState<TaskStatus>("todo");
   const [color, setColor] = useState("#4a154b");
@@ -61,9 +72,11 @@ export function TaskFormDialog({
       if (initialData.startTime) {
         setHasSpecificTime(true);
         setStartTime(initialData.startTime);
-        setEndTime(initialData.endTime || "");
+        setEndTime(initialData.endTime || calculateDefaultEndTime(initialData.startTime));
       } else {
         setHasSpecificTime(false);
+        setStartTime("09:00");
+        setEndTime("10:00");
       }
       setPriority(initialData.priority || "medium");
       setStatus(initialData.status || "todo");
@@ -78,8 +91,10 @@ export function TaskFormDialog({
       setDescription("");
       setDate(defaultDate || formatZonedDate(new Date(), "yyyy-MM-dd"));
       setHasSpecificTime(!!defaultStartTime);
-      setStartTime(defaultStartTime || "09:00");
-      setEndTime("10:00");
+      const computedStart = defaultStartTime || "09:00";
+      const computedEnd = defaultEndTime || calculateDefaultEndTime(computedStart);
+      setStartTime(computedStart);
+      setEndTime(computedEnd);
       setPriority("medium");
       setStatus("todo");
       setColor("#4a154b");
@@ -87,7 +102,7 @@ export function TaskFormDialog({
       setIsRecurring(false);
       setRecurrenceFreq("daily");
     }
-  }, [initialData, defaultDate, defaultStartTime, isOpen]);
+  }, [initialData, defaultDate, defaultStartTime, defaultEndTime, isOpen]);
 
   const handleAddSubtask = () => {
     if (!newSubtaskTitle.trim()) return;

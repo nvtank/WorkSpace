@@ -110,6 +110,7 @@ export function CalendarView({
     setEditingTask(task);
     setSelectedSlotDate(formatZonedDate(task.date, "yyyy-MM-dd"));
     setSelectedSlotTime(task.startTime || "09:00");
+    setSelectedSlotEndTime(task.endTime || "");
     setTaskFormOpen(true);
   };
 

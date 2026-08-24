@@ -68,6 +68,17 @@ export function serializeDocument<T>(doc: any): T {
   if (obj.templateId && typeof obj.templateId.toString === "function") {
     obj.templateId = obj.templateId.toString();
   }
+  if (Array.isArray(obj.courses)) {
+    obj.courses = obj.courses.map((c: any) => {
+      if (!c) return c;
+      const cObj = typeof c.toObject === "function" ? c.toObject() : { ...c };
+      if (cObj._id) {
+        cObj.id = cObj._id.toString();
+        delete cObj._id;
+      }
+      return cObj;
+    });
+  }
   return obj as T;
 }
 

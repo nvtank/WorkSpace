@@ -11,6 +11,7 @@ interface TaskBlockProps {
   onEdit: (task: TaskDTO) => void;
   onToggleStatus: (task: TaskDTO) => void;
   isDragging?: boolean;
+  className?: string;
 }
 
 export function TaskBlock({
@@ -18,6 +19,7 @@ export function TaskBlock({
   onEdit,
   onToggleStatus,
   isDragging = false,
+  className,
 }: TaskBlockProps) {
   const isDone = task.status === "done";
   
@@ -46,11 +48,12 @@ export function TaskBlock({
     <div
       onClick={() => onEdit(task)}
       className={cn(
-        "group relative p-2.5 rounded-lg border text-xs cursor-pointer transition-all duration-150 select-none",
+        "group relative p-2 rounded-lg border text-xs cursor-pointer transition-all duration-150 select-none flex flex-col justify-between overflow-hidden",
         isDone
-          ? "bg-canvas-lavender/40 border-semantic-success/30 text-ink/70 line-through"
-          : "bg-surface border-hairline hover:border-primary/50 text-ink hover:shadow-sm",
-        isDragging && "opacity-60 shadow-elevation2 scale-[1.02]"
+          ? "bg-canvas-lavender/50 border-semantic-success/30 text-ink/70 line-through"
+          : "bg-surface border-hairline hover:border-primary/50 text-ink shadow-xs hover:shadow-sm",
+        isDragging && "opacity-60 shadow-elevation2 scale-[1.02]",
+        className
       )}
       style={{
         borderLeftWidth: "4px",

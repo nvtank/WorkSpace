@@ -6,6 +6,7 @@ import { z } from "zod";
 const courseSchema = z.object({
   name: z.string().min(1),
   credits: z.number().min(0),
+  // Accept both scale 4 (0-4.0) and scale 10 (0-10); the calculate route normalises to scale 4.
   grade: z.number().min(0).max(10).nullable().optional(),
   difficulty: z.enum(["easy", "medium", "hard"]).optional(),
   status: z.enum(["completed", "planned"]),

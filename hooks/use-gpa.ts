@@ -77,7 +77,10 @@ export function useGPA() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!res.ok) throw new Error("Không thể cập nhật học kỳ");
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => ({}));
+        throw new Error(errJson.error || "Không thể cập nhật học kỳ");
+      }
       return res.json();
     },
     onSuccess: () => {

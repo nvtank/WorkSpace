@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { SemesterDTO, CourseDTO, Difficulty, CourseStatus } from "@/types";
+import { normalizeGrade10To4 } from "@/lib/gpa-calculator";
 import {
   Plus,
   Trash2,
@@ -190,7 +191,7 @@ export function SemesterForm({
             );
             const semCredits = sem.courses.reduce((acc, c) => acc + c.credits, 0);
             const semQP = completedCourses.reduce(
-              (acc, c) => acc + c.credits * (c.grade || 0),
+              (acc, c) => acc + c.credits * normalizeGrade10To4(c.grade || 0),
               0
             );
             const completedCredits = completedCourses.reduce((acc, c) => acc + c.credits, 0);
@@ -272,7 +273,7 @@ export function SemesterForm({
                                     max="4.0"
                                     value={
                                       course.grade !== undefined && course.grade !== null
-                                        ? course.grade
+                                        ? normalizeGrade10To4(course.grade)
                                         : ""
                                     }
                                     onChange={(e) => {
