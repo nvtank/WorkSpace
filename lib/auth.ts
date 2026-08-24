@@ -21,8 +21,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
 
         await connectDB();
-        const email = String(credentials.email).toLowerCase().trim();
-        const user = await User.findOne({ email });
+        const input = String(credentials.email).toLowerCase().trim();
+        const user = await User.findOne({
+          $or: [
+            { email: input },
+            { email: input.includes("@") ? input : `${input}@lifehub.local` },
+          ],
+        });
 
         if (!user || !user.passwordHash) {
           return null;
