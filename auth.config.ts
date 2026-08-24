@@ -1,9 +1,13 @@
 import type { NextAuthConfig } from "next-auth";
 
-const SECRET =
-  process.env.AUTH_SECRET ||
-  process.env.NEXTAUTH_SECRET ||
-  "GLw0kLPhHXZNa909iJvrPzvYhynq2kWlznJ8msLhphk=";
+if (!process.env.AUTH_SECRET) {
+  process.env.AUTH_SECRET = process.env.NEXTAUTH_SECRET || "GLw0kLPhHXZNa909iJvrPzvYhynq2kWlznJ8msLhphk=";
+}
+if (!process.env.AUTH_TRUST_HOST) {
+  process.env.AUTH_TRUST_HOST = "true";
+}
+
+const SECRET = process.env.AUTH_SECRET;
 
 export const authConfig = {
   trustHost: true,

@@ -6,10 +6,14 @@ import { connectDB } from "@/lib/db";
 import { User } from "@/models/User";
 import { authConfig } from "@/auth.config";
 
-const SECRET =
-  process.env.AUTH_SECRET ||
-  process.env.NEXTAUTH_SECRET ||
-  "GLw0kLPhHXZNa909iJvrPzvYhynq2kWlznJ8msLhphk=";
+if (!process.env.AUTH_SECRET) {
+  process.env.AUTH_SECRET = process.env.NEXTAUTH_SECRET || "GLw0kLPhHXZNa909iJvrPzvYhynq2kWlznJ8msLhphk=";
+}
+if (!process.env.AUTH_TRUST_HOST) {
+  process.env.AUTH_TRUST_HOST = "true";
+}
+
+const SECRET = process.env.AUTH_SECRET;
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
