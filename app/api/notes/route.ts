@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { withAuth, serializeDocuments, serializeDocument } from "@/lib/api-helper";
 import { Note } from "@/models/Note";
 import { noteSchema } from "@/lib/validations/index";
+import sanitizeHtml from "sanitize-html";
 
 // GET /api/notes?tag=...&search=...&limit=...&page=...
 export async function GET(req: NextRequest) {
@@ -48,8 +49,30 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const validatedData = noteSchema.parse(body);
 
+    // Sanitize HTML content to prevent XSS
+    const cleanContent = sanitizeHtml(validatedData.content, {
+      allowedTags: [
+        "p", "b", "strong", "i", "em", "u", "s", "strike",
+        "ul", "ol", "li", "h1", "h2", "h3", "h4", "h5", "h6",
+        "blockquote", "br", "code", "pre", "a", "span", "div"
+      ],
+      allowedAttributes: {
+        "a": ["href", "target", "rel"],
+        "span": ["style"],
+        "div": ["style"],
+      },
+      allowedStyles: {
+        "*": {
+          "color": [/^#[0-9a-fA-F]{3,6}$/],
+          "background-color": [/^#[0-9a-fA-F]{3,6}$/],
+          "text-align": [/^(left|right|center|justify)$/],
+        }
+      },
+    });
+
     const newNote = await Note.create({
       ...validatedData,
+      content: cleanContent,
       userId: user.id,
     });
 

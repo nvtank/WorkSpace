@@ -11,14 +11,17 @@ import {
   Edit2,
   Check,
   X,
+  FileJson,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ImportJSONDialog } from "./import-json-dialog";
 
 interface SemesterFormProps {
   semesters: SemesterDTO[];
   onCreateSemester: (data: Partial<SemesterDTO>) => Promise<any>;
   onUpdateSemester: (params: { id: string; data: Partial<SemesterDTO> }) => Promise<any>;
   onDeleteSemester: (id: string) => Promise<any>;
+  onRefresh?: () => void;
 }
 
 export function SemesterForm({
@@ -26,10 +29,12 @@ export function SemesterForm({
   onCreateSemester,
   onUpdateSemester,
   onDeleteSemester,
+  onRefresh,
 }: SemesterFormProps) {
   const [openSemesters, setOpenSemesters] = useState<Record<string, boolean>>({});
   const [newSemesterName, setNewSemesterName] = useState("");
   const [isAddingSemester, setIsAddingSemester] = useState(false);
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
 
   // New course inline form state
   const [addingCourseForSem, setAddingCourseForSem] = useState<string | null>(null);
@@ -122,14 +127,25 @@ export function SemesterForm({
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setIsAddingSemester(true)}
-          className="btn-primary-compact inline-flex items-center gap-1.5"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Thêm học kỳ</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setImportDialogOpen(true)}
+            className="btn-outline-aubergine inline-flex items-center gap-1.5 text-xs"
+          >
+            <FileJson className="w-4 h-4" />
+            <span>Import JSON</span>
+          </button>
+          
+          <button
+            type="button"
+            onClick={() => setIsAddingSemester(true)}
+            className="btn-primary-compact inline-flex items-center gap-1.5"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Thêm học kỳ</span>
+          </button>
+        </div>
       </div>
 
       {/* Add Semester Form */}
@@ -415,6 +431,15 @@ export function SemesterForm({
           })
         )}
       </div>
+
+      {/* Import JSON Dialog */}
+      <ImportJSONDialog
+        isOpen={importDialogOpen}
+        onClose={() => setImportDialogOpen(false)}
+        onSuccess={() => {
+          onRefresh?.();
+        }}
+      />
     </div>
   );
 }

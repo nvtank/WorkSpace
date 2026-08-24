@@ -159,3 +159,14 @@ export interface AcademicGoalDTO {
   totalCreditsRequired: number;
   updatedAt: string;
 }
+
+export interface JournalDTO {
+  id: string;
+  userId: string;
+  date: string;
+  mood: 1 | 2 | 3 | 4 | 5;
+  content: string;
+  prompt?: string;
+  createdAt: string;
+  updatedAt: string;
+}

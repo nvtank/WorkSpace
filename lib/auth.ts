@@ -21,18 +21,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
 
         await connectDB();
-        const identifier = String(credentials.email).toLowerCase().trim();
-        const user = await User.findOne({
-          $or: [
-            { email: identifier },
-            { email: `${identifier}@lifehub.local` },
-            { email: `${identifier}@gmail.com` },
-            { name: { $regex: new RegExp(`^${identifier}$`, "i") } },
-          ],
-        });
+        const email = String(credentials.email).toLowerCase().trim();
+        const user = await User.findOne({ email });
 
         if (!user || !user.passwordHash) {
           return null;
+        }
+
+        // Check if account is locked
+        if (user.lockedUntil && user.lockedUntil > new Date()) {
+          const minutesLeft = Math.ceil((user.lockedUntil.getTime() - Date.now()) / 60000);
+          throw new Error(`Tài khoản bị khóa do đăng nhập sai quá nhiều. Thử lại sau ${minutesLeft} phút.`);
         }
 
         const isValid = await bcrypt.compare(
@@ -41,7 +40,26 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         );
 
         if (!isValid) {
+          // Increment failed attempts
+          const newFailedAttempts = (user.failedLoginAttempts || 0) + 1;
+          const updates: any = { failedLoginAttempts: newFailedAttempts };
+
+          // Lock account after 5 failed attempts for 15 minutes
+          if (newFailedAttempts >= 5) {
+            const lockDuration = 15 * 60 * 1000; // 15 minutes
+            updates.lockedUntil = new Date(Date.now() + lockDuration);
+          }
+
+          await User.findByIdAndUpdate(user._id, updates);
           return null;
+        }
+
+        // Reset failed attempts on successful login
+        if (user.failedLoginAttempts > 0 || user.lockedUntil) {
+          await User.findByIdAndUpdate(user._id, {
+            failedLoginAttempts: 0,
+            lockedUntil: null,
+          });
         }
 
         return {

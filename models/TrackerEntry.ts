@@ -17,7 +17,7 @@ const TrackerEntrySchema = new Schema<ITrackerEntry>(
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
     trackerId: { type: Schema.Types.ObjectId, ref: "Tracker", required: true, index: true },
     value: { type: Number, required: true },
-    type: { type: String, enum: ["expense", "income", "default"], default: "expense" },
+    type: { type: String, enum: ["expense", "income", "default"] },
     category: { type: String, trim: true },
     note: { type: String, trim: true },
     date: { type: Date, required: true, index: true },

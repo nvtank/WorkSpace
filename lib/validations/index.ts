@@ -11,7 +11,7 @@ export const courseSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "Tên môn học không được để trống"),
   credits: z.number().min(0, "Số tín chỉ phải lớn hơn hoặc bằng 0"),
-  grade: z.number().min(0).max(10).nullable().optional(),
+  grade: z.number().min(0).max(4.0, "Điểm tối đa là 4.0").nullable().optional(),
   difficulty: z.enum(["easy", "medium", "hard"]).default("medium"),
   status: z.enum(["completed", "planned"]).default("planned"),
 });
@@ -25,6 +25,13 @@ export const semesterSchema = z.object({
 export const academicGoalSchema = z.object({
   targetGPA: z.number().min(0).max(4.0, "GPA mục tiêu tối đa 4.0"),
   totalCreditsRequired: z.number().min(1, "Tổng tín chỉ phải lớn hơn 0"),
+});
+
+export const journalSchema = z.object({
+  date: z.string().or(z.date()),
+  mood: z.number().min(1).max(5).int(),
+  content: z.string().min(1, "Nội dung nhật ký không được để trống"),
+  prompt: z.string().optional(),
 });
 
 export const userSettingsSchema = z.object({

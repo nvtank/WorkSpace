@@ -20,6 +20,25 @@ export function TaskBlock({
   isDragging = false,
 }: TaskBlockProps) {
   const isDone = task.status === "done";
+  
+  // Check if task is overdue
+  const isOverdue = !isDone && (() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const taskDate = new Date(task.date);
+    taskDate.setHours(0, 0, 0, 0);
+    
+    // If task has end time, compare full datetime
+    if (task.endTime) {
+      const [hours, minutes] = task.endTime.split(':').map(Number);
+      taskDate.setHours(hours, minutes, 0, 0);
+      return taskDate < new Date();
+    }
+    
+    // Otherwise, just compare dates
+    return taskDate < today;
+  })();
+  
   const priorityColor =
     DESIGN_TOKENS.priorityColors[task.priority] || DESIGN_TOKENS.priorityColors.medium;
 
@@ -57,9 +76,20 @@ export function TaskBlock({
           </button>
 
           <div className="flex-1 min-w-0">
-            <p className={cn("font-bold truncate text-xs", isDone && "line-through text-ink-mute")}>
-              {task.title}
-            </p>
+            <div className="flex items-center gap-1.5">
+              <p className={cn("font-bold truncate text-xs", isDone && "line-through text-ink-mute")}>
+                {task.title}
+              </p>
+              {/* Overdue indicator */}
+              {isOverdue && (
+                <div title="Quá hạn">
+                  <AlertCircle 
+                    className="w-3.5 h-3.5 flex-shrink-0" 
+                    style={{ color: DESIGN_TOKENS.statusColors.overdue }}
+                  />
+                </div>
+              )}
+            </div>
 
             {/* Time / Description info */}
             {task.startTime && (
