@@ -38,7 +38,12 @@ import {
 import { cn } from "@/lib/utils";
 
 interface CalendarViewProps {
+  viewMode: "day" | "week" | "month";
+  currentDate: Date;
+  onViewModeChange: (mode: "day" | "week" | "month") => void;
+  onDateChange: (date: Date) => void;
   tasks: TaskDTO[];
+  isLoading?: boolean;
   onCreateTask: (data: Partial<TaskDTO>) => Promise<any>;
   onUpdateTask: (params: { id: string; data: Partial<TaskDTO> }) => Promise<any>;
   onDeleteTask: (id: string) => Promise<any>;
@@ -46,15 +51,17 @@ interface CalendarViewProps {
 }
 
 export function CalendarView({
+  viewMode,
+  currentDate,
+  onViewModeChange,
+  onDateChange,
   tasks,
+  isLoading,
   onCreateTask,
   onUpdateTask,
   onDeleteTask,
   onCopyDay,
 }: CalendarViewProps) {
-  const [viewMode, setViewMode] = useState<"day" | "week" | "month">("week");
-  const [currentDate, setCurrentDate] = useState(new Date());
-
   // Dialogs
   const [taskFormOpen, setTaskFormOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<TaskDTO | null>(null);
@@ -74,19 +81,19 @@ export function CalendarView({
 
   // Navigation handlers
   const handlePrev = () => {
-    if (viewMode === "day") setCurrentDate(subDays(currentDate, 1));
-    else if (viewMode === "week") setCurrentDate(subWeeks(currentDate, 1));
-    else setCurrentDate(subMonths(currentDate, 1));
+    if (viewMode === "day") onDateChange(subDays(currentDate, 1));
+    else if (viewMode === "week") onDateChange(subWeeks(currentDate, 1));
+    else onDateChange(subMonths(currentDate, 1));
   };
 
   const handleNext = () => {
-    if (viewMode === "day") setCurrentDate(addDays(currentDate, 1));
-    else if (viewMode === "week") setCurrentDate(addWeeks(currentDate, 1));
-    else setCurrentDate(addMonths(currentDate, 1));
+    if (viewMode === "day") onDateChange(addDays(currentDate, 1));
+    else if (viewMode === "week") onDateChange(addWeeks(currentDate, 1));
+    else onDateChange(addMonths(currentDate, 1));
   };
 
   const handleToday = () => {
-    setCurrentDate(new Date());
+    onDateChange(new Date());
   };
 
   // Slot click / drag select
@@ -143,10 +150,11 @@ export function CalendarView({
     return eachDayOfInterval({ start, end });
   }, [viewMode, currentDate]);
 
-  // Quick stats for current day
-  const doneCount = currentDayTasks.filter((t) => t.status === "done").length;
-  const pendingCount = currentDayTasks.filter((t) => t.status !== "done").length;
-  const highPriorityCount = currentDayTasks.filter((t) => t.priority === "high").length;
+  // Quick stats - use all tasks in current view range
+  const statsLabel = viewMode === "day" ? "hôm nay" : viewMode === "week" ? "tuần này" : "tháng này";
+  const doneCount = tasks.filter((t) => t.status === "done").length;
+  const pendingCount = tasks.filter((t) => t.status !== "done").length;
+  const highPriorityCount = tasks.filter((t) => t.priority === "high").length;
 
   return (
     <div className="space-y-6 pb-20">
@@ -157,8 +165,8 @@ export function CalendarView({
             <Calendar className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-[10px] font-bold uppercase text-ink-mute block">Tổng Công Việc</span>
-            <span className="text-xl sm:text-2xl font-black text-ink">{currentDayTasks.length} task</span>
+            <span className="text-[10px] font-bold uppercase text-ink-mute block">Tổng {statsLabel}</span>
+            <span className="text-xl sm:text-2xl font-black text-ink">{tasks.length} task</span>
           </div>
         </div>
 
@@ -238,7 +246,7 @@ export function CalendarView({
               <button
                 key={mode}
                 type="button"
-                onClick={() => setViewMode(mode)}
+                onClick={() => onViewModeChange(mode)}
                 className={cn(
                   "px-3 py-1 text-xs font-bold rounded-pill transition-all",
                   viewMode === mode

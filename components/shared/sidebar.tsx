@@ -37,6 +37,12 @@ export const navigationItems = [
     badge: null,
   },
   {
+    name: "Nhật ký",
+    href: "/journal",
+    icon: BookMarked,
+    badge: null,
+  },
+  {
     name: "Tài chính & Thu chi",
     href: "/finance",
     icon: Wallet,
@@ -108,7 +114,7 @@ export function Sidebar() {
                   Life & Study Hub
                 </span>
                 <span className="text-[10px] font-bold text-primary truncate">
-                  {user?.name || "Nguyễn Văn Tuấn Anh"}
+                  {user?.name || "User"}
                 </span>
               </div>
             )}
@@ -158,7 +164,7 @@ export function Sidebar() {
                     ? "justify-center p-3"
                     : "gap-3.5 px-3.5 py-2.5 text-xs sm:text-sm",
                   isActive
-                    ? "bg-primary text-white shadow-sm"
+                    ? "bg-canvas-lavender text-primary"
                     : "text-ink-mute hover:text-ink hover:bg-canvas-cream/60"
                 )}
                 title={isSidebarCollapsed ? item.name : undefined}
@@ -166,7 +172,7 @@ export function Sidebar() {
                 <item.icon
                   className={cn(
                     "w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110",
-                    isActive ? "text-white" : "text-ink-mute group-hover:text-primary"
+                    isActive ? "text-primary" : "text-ink-mute group-hover:text-primary"
                   )}
                 />
 
@@ -179,7 +185,7 @@ export function Sidebar() {
                     className={cn(
                       "text-[10px] px-1.5 py-0.5 rounded-pill font-extrabold uppercase",
                       isActive
-                        ? "bg-white/20 text-white"
+                        ? "bg-primary/20 text-primary"
                         : "bg-canvas-lavender text-primary"
                     )}
                   >
@@ -213,10 +219,10 @@ export function Sidebar() {
               {!isSidebarCollapsed && (
                 <div className="truncate">
                   <p className="text-xs font-bold text-ink truncate">
-                    {user?.name || "Nguyễn Văn Tuấn Anh"}
+                    {user?.name || "User"}
                   </p>
                   <p className="text-[10px] text-ink-mute truncate">
-                    {user?.email || "nvtank"}
+                    {user?.email || "user@lifehub.local"}
                   </p>
                 </div>
               )}
@@ -254,7 +260,7 @@ export function Sidebar() {
                 </div>
                 <div>
                   <h3 className="font-extrabold text-sm text-ink">Life & Study Hub</h3>
-                  <p className="text-[11px] text-ink-mute">VKU - Tuấn Anh</p>
+                  <p className="text-[11px] text-ink-mute">{user?.name || "User"}</p>
                 </div>
               </div>
               <button
@@ -281,14 +287,14 @@ export function Sidebar() {
                     className={cn(
                       "flex items-center gap-3.5 px-4 py-3 rounded-xl font-bold text-sm transition-all",
                       isActive
-                        ? "bg-primary text-white shadow-sm"
+                        ? "bg-canvas-lavender text-primary"
                         : "text-ink-mute hover:text-ink hover:bg-canvas-cream/60"
                     )}
                   >
                     <item.icon className="w-5 h-5 flex-shrink-0" />
                     <span className="truncate flex-1">{item.name}</span>
                     {item.badge && (
-                      <span className="text-[10px] px-2 py-0.5 rounded-pill bg-white/20 text-white font-extrabold">
+                      <span className="text-[10px] px-2 py-0.5 rounded-pill bg-primary/20 text-primary font-extrabold">
                         {item.badge}
                       </span>
                     )}
@@ -304,7 +310,7 @@ export function Sidebar() {
                   A
                 </div>
                 <div className="truncate text-xs">
-                  <p className="font-bold text-ink truncate">{user?.name || "Tuấn Anh"}</p>
+                  <p className="font-bold text-ink truncate">{user?.name || "User"}</p>
                 </div>
               </div>
               <button

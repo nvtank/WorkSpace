@@ -19,6 +19,8 @@ export interface IUser extends Document {
     theme: "light" | "dark" | "system";
     weekStartsOn: 0 | 1;
   };
+  failedLoginAttempts: number;
+  lockedUntil?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -26,15 +28,11 @@ export interface IUser extends Document {
 const defaultGradeScale = {
   max: 4.0,
   conversionTable: [
-    { label: "A+", min: 9.0, max: 10.0, value: 4.0 },
-    { label: "A", min: 8.5, max: 8.9, value: 4.0 },
-    { label: "B+", min: 8.0, max: 8.4, value: 3.5 },
-    { label: "B", min: 7.0, max: 7.9, value: 3.0 },
-    { label: "C+", min: 6.5, max: 6.9, value: 2.5 },
-    { label: "C", min: 5.5, max: 6.4, value: 2.0 },
-    { label: "D+", min: 5.0, max: 5.4, value: 1.5 },
-    { label: "D", min: 4.0, max: 4.9, value: 1.0 },
-    { label: "F", min: 0.0, max: 3.9, value: 0.0 },
+    { label: "A", min: 3.5, max: 4.0, value: 4.0 },
+    { label: "B", min: 2.5, max: 3.49, value: 3.0 },
+    { label: "C", min: 1.5, max: 2.49, value: 2.0 },
+    { label: "D", min: 1.0, max: 1.49, value: 1.0 },
+    { label: "F", min: 0.0, max: 0.99, value: 0.0 },
   ],
 };
 
@@ -46,29 +44,30 @@ const UserSchema = new Schema<IUser>(
     avatarUrl: { type: String },
     timezone: { type: String, default: "Asia/Ho_Chi_Minh" },
     gradeScale: {
-      max: { type: Number, default: 4.0 },
-      conversionTable: [
-        {
-          label: { type: String, required: true },
-          min: { type: Number, required: true },
-          max: { type: Number, required: true },
-          value: { type: Number, required: true },
-        },
-      ],
+      type: {
+        max: { type: Number, default: 4.0 },
+        conversionTable: [
+          {
+            label: { type: String, required: true },
+            min: { type: Number, required: true },
+            max: { type: Number, required: true },
+            value: { type: Number, required: true },
+          },
+        ],
+      },
+      default: () => defaultGradeScale,
     },
     preferences: {
       theme: { type: String, enum: ["light", "dark", "system"], default: "light" },
       weekStartsOn: { type: Number, enum: [0, 1], default: 1 },
     },
+    failedLoginAttempts: { type: Number, default: 0 },
+    lockedUntil: { type: Date },
   },
   {
     timestamps: true,
   }
 );
-
-if (!UserSchema.path("gradeScale.conversionTable")) {
-  UserSchema.path("gradeScale").default(() => defaultGradeScale);
-}
 
 export const User: Model<IUser> =
   mongoose.models.User || mongoose.model<IUser>("User", UserSchema);

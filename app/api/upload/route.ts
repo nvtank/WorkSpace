@@ -16,13 +16,31 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Không tìm thấy file tải lên" }, { status: 400 });
     }
 
-    if (!cloudName) {
-      // Return a placeholder or mock URL if Cloudinary is not configured yet
-      const fallbackUrl = `https://images.unsplash.com/photo-1517842645767-c639042777db?w=800&auto=format&fit=crop&q=60`;
-      return NextResponse.json({
-        url: fallbackUrl,
-        warning: "CLOUDINARY_CLOUD_NAME chưa được thiết lập, dùng fallback preview",
-      });
+    // Validate file type - only images
+    if (!file.type.startsWith("image/")) {
+      return NextResponse.json(
+        { error: "Chỉ chấp nhận file ảnh (jpg, png, gif, webp...)" },
+        { status: 400 }
+      );
+    }
+
+    // Validate file size - max 5MB
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      return NextResponse.json(
+        { error: "Ảnh quá lớn. Kích thước tối đa: 5MB" },
+        { status: 400 }
+      );
+    }
+
+    if (!cloudName || !apiKey || !apiSecret) {
+      return NextResponse.json(
+        {
+          error: "Chức năng upload ảnh chưa được cấu hình",
+          details: "Vui lòng thiết lập CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY và CLOUDINARY_API_SECRET trong file .env",
+        },
+        { status: 503 }
+      );
     }
 
     const uploadData = new FormData();
