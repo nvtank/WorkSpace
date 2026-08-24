@@ -11,7 +11,7 @@ export const courseSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "Tên môn học không được để trống"),
   credits: z.number().min(0, "Số tín chỉ phải lớn hơn hoặc bằng 0"),
-  grade: z.number().min(0).max(4.0, "Điểm tối đa là 4.0").nullable().optional(),
+  grade: z.number().min(0).max(10, "Điểm không vượt quá 10.0").nullable().optional(),
   difficulty: z.enum(["easy", "medium", "hard"]).default("medium"),
   status: z.enum(["completed", "planned"]).default("planned"),
 });
@@ -54,3 +54,14 @@ export const userSettingsSchema = z.object({
     ),
   }),
 });
+
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Vui lòng nhập mật khẩu hiện tại"),
+    newPassword: z.string().min(6, "Mật khẩu mới phải có ít nhất 6 ký tự"),
+    confirmPassword: z.string().min(1, "Vui lòng xác nhận mật khẩu mới"),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Mật khẩu xác nhận không khớp với mật khẩu mới",
+    path: ["confirmPassword"],
+  });

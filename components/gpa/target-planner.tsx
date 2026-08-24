@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { CourseTargetSuggestion, simulateGPA } from "@/lib/gpa-calculator";
+import { CourseTargetSuggestion, simulateGPA, normalizeGrade10To4 } from "@/lib/gpa-calculator";
 import { SemesterDTO } from "@/types";
 import { Sparkles, Calculator, HelpCircle, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -25,11 +25,12 @@ export function TargetPlanner({
   // Planned courses list
   const plannedCourses = React.useMemo(() => {
     const list: Array<{ id: string; name: string; credits: number; semName: string }> = [];
-    semesters.forEach((sem) => {
-      sem.courses.forEach((c) => {
+    semesters.forEach((sem, semIdx) => {
+      (sem.courses || []).forEach((c: any, cIdx) => {
         if (c.grade === undefined || c.grade === null) {
+          const courseId = c.id || c._id?.toString() || `${sem.id || semIdx}-${cIdx}-${c.name}`;
           list.push({
-            id: c.id,
+            id: courseId,
             name: c.name,
             credits: c.credits,
             semName: sem.name,
@@ -46,7 +47,8 @@ export function TargetPlanner({
     semesters.forEach((sem) => {
       sem.courses.forEach((c) => {
         if (c.grade !== undefined && c.grade !== null) {
-          completedList.push({ name: c.name, credits: c.credits, grade: c.grade });
+          // Normalize from scale 10 → scale 4 (VKU/MOET table) to match server-side calc
+          completedList.push({ name: c.name, credits: c.credits, grade: normalizeGrade10To4(c.grade) });
         }
       });
     });
@@ -109,7 +111,7 @@ export function TargetPlanner({
             <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
               {suggestions.map((s, idx) => (
                 <div
-                  key={idx}
+                  key={s.courseId || `suggestion-${idx}-${s.name}`}
                   className="p-3 rounded-lg border border-hairline bg-canvas hover:border-primary/40 transition-colors flex items-center justify-between gap-3 text-xs"
                 >
                   <div>
@@ -204,13 +206,13 @@ export function TargetPlanner({
         {/* Inputs for Planned Courses */}
         <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
           {plannedCourses.length === 0 ? (
-            <div className="py-6 text-center text-xs text-ink-mute bg-canvas-cream/30 rounded-xl">
+            <div key="empty" className="py-6 text-center text-xs text-ink-mute bg-canvas-cream/30 rounded-xl">
               Thêm các môn dự kiến ở danh sách học kỳ để kích hoạt mô phỏng
             </div>
           ) : (
-            plannedCourses.map((c) => (
+            plannedCourses.map((c, idx) => (
               <div
-                key={c.id}
+                key={c.id || `planned-${idx}`}
                 className="p-2.5 rounded-lg border border-hairline bg-canvas flex items-center justify-between gap-3 text-xs"
               >
                 <div className="truncate flex-1">
