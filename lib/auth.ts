@@ -6,10 +6,15 @@ import { connectDB } from "@/lib/db";
 import { User } from "@/models/User";
 import { authConfig } from "@/auth.config";
 
+const SECRET =
+  process.env.AUTH_SECRET ||
+  process.env.NEXTAUTH_SECRET ||
+  "GLw0kLPhHXZNa909iJvrPzvYhynq2kWlznJ8msLhphk=";
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
   trustHost: true,
-  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
+  secret: SECRET,
   providers: [
     Credentials({
       name: "Credentials",
