@@ -69,16 +69,16 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-semibold text-ink mb-1.5">
-              Email
+              Tên đăng nhập / Email
             </label>
             <div className="relative">
               <Mail className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-mute pointer-events-none" />
               <input
-                type="email"
+                type="text"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@lifehub.local"
+                placeholder="nvtank hoặc admin@lifehub.local"
                 className="input-base pl-10"
                 disabled={isLoading}
               />
